@@ -1,5 +1,7 @@
 # 运维与 Thunderbird
 
+南大邮箱从配置到 Thunderbird 核对的完整步骤见[中文操作指南](nju-walkthrough.md) / [English guide](nju-walkthrough.en.md)。本页用于查询环境变量与通用操作边界。
+
 ## 环境变量
 
 | 变量 | 默认 / 含义 |
