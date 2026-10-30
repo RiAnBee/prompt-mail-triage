@@ -2,15 +2,13 @@
 
 [简体中文](README.md) | English
 
-Sort real email with Qwen served through Strata, following a classification prompt you provide, and reuse the workflow through an agent Skill and MCP tools.
+A Qwen/Strata email-sorting tool with customizable prompts, a reusable Skill, and an MCP interface.
 
 ## What this project is for
 
-You decide how mail should be sorted. A prompt might distinguish messages that need a personal reply from those that are only informational, or separate account notices, campus IT messages, and other mail. These are examples, not fixed categories.
+Define email-sorting rules in a prompt, use Qwen served through Strata to classify real mailbox content, and inspect messages and classification results in Thunderbird.
 
-The workflow reads messages from a selected mailbox, asks Qwen through Strata for a category and reason, and lets you check whether the result follows your instructions. Change the prompt and category definitions to change the sorting task; no classifier code changes are needed.
-
-The Skill describes how an agent should use this workflow; MCP exposes the read-only tools that perform it. Thunderbird is the client for inspecting messages and checking results. If you also want categories reflected in the mailbox, explicitly copy messages into category folders with the separate CLI operation, then inspect those folders in Thunderbird.
+Rules and categories can be adjusted for the task, such as separating messages that need a reply from routine notifications, without changing classifier code. The workflow is available as a Skill with MCP tools for use by an agent, or through the CLI for manual runs. To reflect categories in the mailbox, explicitly copy messages into category folders, then view them in Thunderbird.
 
 ## How the pieces fit together
 
@@ -23,9 +21,9 @@ The Skill describes how an agent should use this workflow; MCP exposes the read-
 | Skill + MCP | The Skill guides the agent; MCP exposes the callable read-only tools |
 | CLI | Runs classification manually, inspects results, and explicitly previews or copies to folders |
 
-The workflow has been exercised with a real Nanjing University mailbox, including Qwen/Strata classification, Thunderbird folder checks, and Skill / MCP calls. Other users can connect their own IMAP mailboxes. See the [validation record](docs/validation.md) for the scope; these results are not an accuracy guarantee.
+The project has been validated with a real Nanjing University mailbox, including email classification, Thunderbird folder checks, and Skill / MCP calls. Other mailboxes can be configured according to their provider's IMAP and authentication settings. See the [validation record](docs/validation.md) for the tested scope; these results do not establish classification accuracy.
 
-The guide uses Qwen/Strata as its main model setup. Other OpenAI-compatible services can also be connected. Synthetic samples and the mock client check installation, not real-mail classification quality.
+The model interface also supports other OpenAI-compatible services. Synthetic samples and the mock client check installation, not real-mail classification quality.
 
 Classification and MCP tools are read-only. Folder application is a separate CLI operation that previews by default and writes only with `--apply`; its default mode copies messages and retains the originals. There is no automatic reply, sending, deletion, background monitoring, or Thunderbird extension, and no model weights or mailbox account are bundled.
 
