@@ -1,0 +1,7 @@
+{
+  "task_instruction": "只判断这封邮件今天是否需要本人回复。需要本人今天就动手的归 reply-today；纯粹的通知、广告、自动回执归 read-only。",
+  "categories": [
+    {"name": "reply-today", "description": "今天需要本人回复或动手处理"},
+    {"name": "read-only", "description": "只需阅读，无需回复"}
+  ]
+}

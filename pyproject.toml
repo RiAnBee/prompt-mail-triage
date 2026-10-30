@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "email-triage"
+version = "0.2.0"
+description = "Prompt-driven email triage: IMAP, OpenAI-compatible LLMs, Thunderbird, Skill and MCP"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+keywords = ["email", "classification", "mcp", "llm", "imap", "read-only"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Communications :: Email",
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+
+[project.scripts]
+email-triage = "email_triage.cli:main"
+email-triage-mcp = "email_triage.mcp_server:main"
+
+[project.urls]
+Homepage = "https://github.com/RiAnBee/prompt-mail-triage"
+Repository = "https://github.com/RiAnBee/prompt-mail-triage"
+Issues = "https://github.com/RiAnBee/prompt-mail-triage/issues"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]

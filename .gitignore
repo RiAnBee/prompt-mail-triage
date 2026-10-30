@@ -1,0 +1,26 @@
+# Python / build
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+build/
+dist/
+.pytest_cache/
+.coverage
+htmlcov/
+# Local mailbox data and model configuration
+runs/
+configs/
+private/
+.env
+.env.*
+!.env.example
+*.pass
+*.pem
+*.key
+*.eml
+*.mbox
+*.msf
+# Host state
+.DS_Store
