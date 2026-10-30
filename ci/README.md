@@ -2,9 +2,9 @@
 
 `github-actions-tests.yml` 提供 Python 3.9 / 3.12 测试矩阵，但当前不在 `.github/workflows/` 下，**不会自动运行**。
 
-首次发布时，GitHub OAuth 凭据缺少 `workflow` scope，拒绝上传 workflow；发布过程没有扩大账号权限。因此将模板作为普通文件保留，代码发布不依赖启用 CI。
+首次发布时，GitHub OAuth 凭据缺少 `workflow` scope，上传 workflow 被拒绝；发布时没有扩大账号权限，因此模板保留为普通文件。
 
-需要启用时，由仓库维护者使用具备相应权限的凭据或 GitHub 网页，将该文件放入 `.github/workflows/tests.yml` 后提交即可。该步骤不是安装或使用本工具的前提。
+如需启用，仓库维护者可使用具备相应权限的凭据或 GitHub 网页，将该文件放入 `.github/workflows/tests.yml` 并提交。安装和使用本工具不依赖启用 CI。
 
 本地检查：
 
@@ -13,4 +13,4 @@ python -m pip install -e .
 python -m unittest discover -s tests -v
 ```
 
-本次实际验证为本地 Python 3.9 下 67 项通过；未运行该 GitHub Actions 矩阵，不能宣称远端 CI 已通过。
+此前本地 Python 3.9 验证为 67 项通过；GitHub Actions 矩阵尚未运行，不能据此声称远端 CI 已通过。

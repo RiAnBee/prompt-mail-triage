@@ -58,13 +58,7 @@ JSONL 每行：`{"id","folder","subject","sender","received_at","body"}`。
 
 ## 只读契约
 
-工具表里只有三个只读工具。想加写操作时，请**另建一个 server**，并按以下要求实现，不要混进这里：
-
-1. 写工具在只读模式下不注册，不是“注册了但提示模型别用”。
-2. 预览必须绑定账户、源/目标目录、精确消息集合、身份版本与过期时间。
-3. 确认必须来自真实 UI/elicitation，不接受模型提交的 `confirm: true`。
-4. 执行前重新解析并校验；集合或目录变化即作废预览。
-5. 结果未知（超时）不自动重放，先重新查询状态。
+工具表中只有三个只读工具，不能通过本 server 移动、标记、发送或删除邮件。需要整理到邮箱目录时，可由操作者另行使用 CLI 的 `apply`；它默认预演，显式加 `--apply` 后才写入。copy 和 move 的风险及恢复注意事项见 [运维说明](operations.md#apply-的边界)。
 
 ## 客户端配置
 
@@ -76,13 +70,17 @@ JSONL 每行：`{"id","folder","subject","sender","received_at","body"}`。
       "env": {
         "EMAIL_TRIAGE_CONFIG": "/abs/config.json",
         "EMAIL_TRIAGE_RUN_ROOT": "/abs/runs",
+        "EMAIL_TRIAGE_BASE_URL": "http://127.0.0.1:8000/v1",
+        "EMAIL_TRIAGE_MODEL": "your-model-id",
         "EMAIL_IMAP_HOST": "imap.example.com",
         "EMAIL_IMAP_USER": "you@example.com",
-        "EMAIL_IMAP_KEYCHAIN_ITEM": "email-triage-imap"
+        "EMAIL_IMAP_PASSWORD_FILE": "/abs/imap-password"
       }
     }
   }
 }
 ```
 
-凭据建议走钥匙串或 0600 文件，而不是明文写进客户端配置。
+将示例路径、模型地址、模型 ID 和邮箱账号替换为自己的值。密码文件应只供当前用户读取，权限为 `0600`；也可使用 macOS 钥匙串，不要把密码明文写进客户端配置。
+
+图形界面的 MCP host 不一定继承终端环境变量。请在 host 的 `env` 中显式传入模型地址和 ID，或直接修改配置文件中的模型设置；不要假设终端中的 `export` 对 host 生效。
