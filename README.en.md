@@ -2,13 +2,32 @@
 
 [简体中文](README.md) | English
 
-Classify email using your own instructions and categories. The CLI can read a small sample from IMAP without marking it as read, send the selected content to an OpenAI-compatible model, and save results for human review. A read-only MCP server and an agent Skill are also included. Thunderbird can be used to inspect the mailbox and, optionally, the folders created by the CLI.
+Sort real email with Qwen served through Strata, following a classification prompt you provide, and reuse the workflow through an agent Skill and MCP tools.
 
-- Classification uses IMAP `EXAMINE` and `BODY.PEEK`; it does not mark messages as read.
-- `apply` is a separate CLI operation: it previews by default and writes only with `--apply`. Its default mode copies messages and keeps the originals.
-- The MCP server exposes only three read-only tools; it cannot move, mark, send, or delete mail.
-- Qwen/Strata is one possible model service, not a bundled dependency. This repository does not install or start a model server or include model weights.
-- There is no background monitoring, automatic reply, attachment parsing, link fetching, or Thunderbird extension. Model decisions are suggestions, not guaranteed correct.
+## What this project is for
+
+You decide how mail should be sorted. A prompt might distinguish messages that need a personal reply from those that are only informational, or separate account notices, campus IT messages, and other mail. These are examples, not fixed categories.
+
+The workflow reads messages from a selected mailbox, asks Qwen through Strata for a category and reason, and lets you check whether the result follows your instructions. Change the prompt and category definitions to change the sorting task; no classifier code changes are needed.
+
+The Skill describes how an agent should use this workflow; MCP exposes the read-only tools that perform it. Thunderbird is the client for inspecting messages and checking results. If you also want categories reflected in the mailbox, explicitly copy messages into category folders with the separate CLI operation, then inspect those folders in Thunderbird.
+
+## How the pieces fit together
+
+| Part | Role |
+|---|---|
+| Prompt | Defines the classification rules, allowed categories, and requirements for reasons |
+| Qwen / Strata | Qwen classifies messages; Strata serves the model |
+| IMAP | Connects to the mailbox without accessing Thunderbird's local database |
+| Thunderbird | Displays original messages and, after synchronization, category folders for review |
+| Skill + MCP | The Skill guides the agent; MCP exposes the callable read-only tools |
+| CLI | Runs classification manually, inspects results, and explicitly previews or copies to folders |
+
+The workflow has been exercised with a real Nanjing University mailbox, including Qwen/Strata classification, Thunderbird folder checks, and Skill / MCP calls. Other users can connect their own IMAP mailboxes. See the [validation record](docs/validation.md) for the scope; these results are not an accuracy guarantee.
+
+The guide uses Qwen/Strata as its main model setup. Other OpenAI-compatible services can also be connected. Synthetic samples and the mock client check installation, not real-mail classification quality.
+
+Classification and MCP tools are read-only. Folder application is a separate CLI operation that previews by default and writes only with `--apply`; its default mode copies messages and retains the originals. There is no automatic reply, sending, deletion, background monitoring, or Thunderbird extension, and no model weights or mailbox account are bundled.
 
 The repository is named `prompt-mail-triage`; the installed commands are `email-triage` and `email-triage-mcp`, and the Python import name is `email_triage`. CLI messages and existing supporting documents may be in Chinese.
 
@@ -80,9 +99,9 @@ Write rules and category descriptions for your own task; a model must return one
 
 This project uses Chinese documentation by default; this English guide is the alternative. The language of model-generated reasons follows `task_instruction`; request English there if needed. There is no CLI `--lang` option.
 
-## Connect your model
+## Connect Qwen through Strata
 
-Start your own Qwen/Strata or other OpenAI-compatible service. Replace both placeholders below with the service's actual base URL and model ID. The client calls `/v1/chat/completions`.
+Start the Qwen service in Strata and obtain its actual base URL and model ID. It must expose the OpenAI-compatible `/v1/chat/completions` interface. This project connects to the service; it does not install Strata, download models, or start the server. An existing compatible service can be configured in the same way. Replace the placeholders below with your own service details.
 
 ```bash
 export EMAIL_TRIAGE_BASE_URL=http://127.0.0.1:8000/v1
@@ -177,7 +196,7 @@ Thunderbird is a manual review client, not an extension or a database integratio
 
 ## Install the Skill in an agent host
 
-The reusable instructions are in [skill/SKILL.md](skill/SKILL.md). If your agent host supports Skill discovery, install or copy that directory under the name `email-triage` into a Skill location documented by that host. For a host that explicitly documents a user-level `~/.agents/skills` directory, for example:
+The Skill turns the prompt-based classification workflow into instructions an agent can reuse. The MCP setup in the next section supplies the actual tools; installing the Skill alone does not connect a mailbox. The instructions are in [skill/SKILL.md](skill/SKILL.md). Install the directory under the name `email-triage` in a Skill location documented by your host. For a host that explicitly supports a user-level `~/.agents/skills` directory, for example:
 
 ```bash
 mkdir -p "$HOME/.agents/skills/email-triage"
